@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard do Bot</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f0f0f0; }
+    .card { background: white; padding: 1rem; border-radius: 10px; max-width: 400px; margin: auto; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    button { padding: 0.5rem 1rem; font-size: 1rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Dashboard do Bot</h1>
+    <p id="saldo">Saldo: carregando...</p>
+    <button onclick="coletarDaily()">Pegar Daily</button>
+    <p id="mensagem"></p>
+  </div>
+
+  <script>
+    const userId = "123";
+
+    function atualizarSaldo() {
+      fetch(`/api/saldo/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("saldo").innerText = "Saldo: $" + data.saldo;
+        });
+    }
+
+    function coletarDaily() {
+      fetch(`/api/daily/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.sucesso) {
+            document.getElementById("mensagem").innerText = "Daily coletado! Novo saldo: $" + data.novoSaldo;
+          } else {
+            document.getElementById("mensagem").innerText = data.mensagem;
+          }
+          atualizarSaldo();
+        });
+    }
+
+    atualizarSaldo();
+  </script>
+</body>
+</html>
